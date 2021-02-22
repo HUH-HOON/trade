@@ -5,7 +5,7 @@ from datetime import datetime
 from slacker import Slacker
 import time, calendar
 
-slack = Slacker('')
+slack = Slacker('xoxb-1774719611042-1760255074151-3PhYKfaHPHEJHHSNVgxcLXvy')
 #자신의 슬랙 주소
 def dbgout(message):
     """인자로 받은 문자열을 파이썬 셸과 슬랙으로 동시에 출력한다."""
@@ -244,15 +244,15 @@ def sell_all():
 
 if __name__ == '__main__': 
     try:
-        symbol_list = ['A005930', 'A060900', 'A042420','A042700']
-        #삼성전자,대한그린파워, 네오워즈홀딩스,한미반도체
+        symbol_list = ['A038290','A005930','A068940', 'A058430', 'A042420','A272210','A088350','A103140','A004560','A025820','A096040']
+                       #마크로젠, 삼성전자, 아이씨케이, 포스코강판 , 네오워즈홀딩스, 한화시스템, 한화생명, 풍산, 현대비앤지, 이구산업,이트론
         #symbol - 매수를 원하는 종목 코드
 
               
         bought_list = []     # 매수 완료된 종목 리스트
         #매수완료 코드
-        target_buy_count = 4 # 매수할 종목 수
-        buy_percent = 0.25
+        target_buy_count = 11 # 매수할 종목 수
+        buy_percent = 0.9
 
         printlog('check_creon_system() :', check_creon_system())  # 크레온 접속 점검
         stocks = get_stock_balance('ALL')      # 보유한 모든 종목 조회
@@ -268,8 +268,8 @@ if __name__ == '__main__':
             t_now = datetime.now()
             t_9 = t_now.replace(hour=9, minute=0, second=0, microsecond=0)
             t_start = t_now.replace(hour=9, minute=30, second=0, microsecond=0)
-            t_sell = t_now.replace(hour=14, minute=30, second=0, microsecond=0)
-            t_exit = t_now.replace(hour=14, minute=50, second=0,microsecond=0)
+            t_sell = t_now.replace(hour=14, minute=50, second=0, microsecond=0)
+            t_exit = t_now.replace(hour=15, minute=10, second=0,microsecond=0)
             today = datetime.today().weekday()
             if today == 5 or today == 6:  # 토요일이나 일요일이면 자동 종료
                 printlog('Today is', 'Saturday.' if today == 5 else 'Sunday.')
@@ -277,7 +277,7 @@ if __name__ == '__main__':
             if t_9 < t_now < t_start and soldout == False:
                 soldout = True
                 sell_all()
-            if t_start < t_now < t_sell :  # AM 09:30 ~ PM 02:30 : 매수
+            if t_start < t_now < t_sell :  # AM 09:30 ~ PM 03:00 : 매수
                 for sym in symbol_list:
                     if len(bought_list) < target_buy_count:
                         buy_etf(sym)
@@ -285,11 +285,11 @@ if __name__ == '__main__':
                 if t_now.minute == 30 and 0 <= t_now.second <= 5: 
                     get_stock_balance('ALL')
                     time.sleep(5)
-            if t_sell < t_now < t_exit:  # PM 02:30 ~ PM 02:50 : 일괄 매도
+            if t_sell < t_now < t_exit:  # PM 02:40 ~ PM 03:00 : 일괄 매도
                 if sell_all() == True:
                     dbgout('`sell_all() returned True -> self-destructed!`')
                     sys.exit(0)
-            if t_exit < t_now:  # PM 02:50 ~ :프로그램 종료
+            if t_exit < t_now:  # PM 03:10 ~ :프로그램 종료
                 dbgout('`self-destructed!`')
                 sys.exit(0)
             time.sleep(3)
